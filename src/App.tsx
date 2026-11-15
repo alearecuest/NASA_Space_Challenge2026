@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { AddCustomRotation } from './components/AddCustomRotation'
 import { AlertsList } from './components/AlertsList'
 import { ClimatePanel } from './components/ClimatePanel'
+import { CONEATInfo } from './components/CONEATInfo'
 import { CropSuitabilityGrid } from './components/CropSuitabilityGrid'
 import { FarmReportView } from './components/FarmReportView'
 import { Header } from './components/Header'
@@ -22,6 +23,7 @@ import { useRotationScoring, useCropSuitability } from './hooks/useRotationScori
 import { useCustomRotations } from './hooks/useCustomRotations'
 import { defaultGibsDate } from './services/gibsService'
 import { getCachedOrFetchSoil } from './services/soilGridsService'
+import { getCONEATZoneByDepartment } from './services/coneatService'
 import type { SoilProperties } from './services/soilGridsService'
 import type { RotationId, RotationScore } from './types/rotation'
 
@@ -38,6 +40,7 @@ const App = () => {
 
   const [layerId, setLayerId] = useState(GIBS_LAYERS[0].id)
   const [date, setDate] = useState(defaultGibsDate)
+  const coneatZone = getCONEATZoneByDepartment(location.label.split(',')[0] || '')
   const [showLabels, setShowLabels] = useState(true)
   const [activeTab, setActiveTab] = useState<TabId>('map')
   const [selectedRotation, setSelectedRotation] = useState<RotationId | null>(null)
@@ -232,12 +235,19 @@ const App = () => {
         )}
 
         {activeTab === 'soil' && (
-          <div className="bg-white rounded-lg p-6">
-            {soilData ? (
-              <SoilAnalysis location={location} />
-            ) : (
-              <p className="text-slate-600">Loading soil data...</p>
+          <div style={{ display: 'grid', gap: spacing.xl, gridTemplateColumns: 'auto 1fr' }}>
+            {coneatZone && (
+              <div style={{ maxWidth: '400px' }}>
+                <CONEATInfo zone={coneatZone} location={location.label} />
+              </div>
             )}
+            <div>
+              {soilData ? (
+                <SoilAnalysis location={location} />
+              ) : (
+                <p style={{ color: colors.text.secondary }}>Loading soil data...</p>
+              )}
+            </div>
           </div>
         )}
 
