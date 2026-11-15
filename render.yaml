@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: farm-climetech
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: AI_MODEL
+        value: gemini-flash-latest
+      - key: METEOMATICS_USERNAME
+        sync: false
+      - key: METEOMATICS_PASSWORD
+        sync: false

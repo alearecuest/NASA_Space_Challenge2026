@@ -210,3 +210,13 @@ For questions or feedback:
 ---
 
 **Disclaimer**: This tool supports decision-making but does not replace agricultural advice. Always consult with local agronomists and consider your farm's unique constraints before adopting new rotations.
+
+## Deploy (Render) and API keys
+
+The app runs as one Node web service: `npm run build` creates the front end and `npm start` serves it together with a small `/api` proxy (`server/index.mjs`).
+
+- API keys live **only on the server**. Set `GEMINI_API_KEY`, `AI_MODEL` (default `gemini-flash-latest`), `METEOMATICS_USERNAME` and `METEOMATICS_PASSWORD` in Render → Environment. Never use the `VITE_` prefix for secrets: Vite copies those values into the public JavaScript bundle.
+- Without a Gemini key, `/api/analyze` returns a clearly labelled **demo** analysis, so the app can be tried without accounts.
+- The server sends security headers (CSP, `X-Frame-Options: DENY`, `nosniff`, `Referrer-Policy`, HSTS) and rate-limits `/api` to 20 requests per minute per IP.
+- AI output is shown as plain text only, and only numeric field indicators (no names or free text) are sent to the model. Advice is advisory: the farmer decides with their agronomist.
+- `render.yaml` describes the service; local development: `npm start` (API on :8787) + `npm run dev`.

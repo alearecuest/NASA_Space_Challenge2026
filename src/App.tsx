@@ -1,4 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { AIInsights } from './components/AIInsights'
+import { ConnectionStatus } from './components/ConnectionStatus'
+import type { FieldData } from './types/field'
 import { AddCustomRotation } from './components/AddCustomRotation'
 import { AlertsList } from './components/AlertsList'
 import { ClimatePanel } from './components/ClimatePanel'
@@ -63,6 +66,23 @@ const App = () => {
     }
   }, [customRotations, summary, scoreCustom])
 
+  // Field indicators for the AI layer, built only from NASA POWER numbers
+  const fieldData = useMemo<FieldData | null>(() => {
+    const lastMonth = summary?.monthly.at(-1)
+    if (!summary || !lastMonth) return null
+    const normal = summary.climatology.find((c) => c.month === lastMonth.month)
+    return {
+      latitude: location.lat,
+      longitude: location.lon,
+      soilMoisture: summary.hasSoil ? Math.round(lastMonth.soil * 100) : Number.NaN,
+      rainfall: Math.round(lastMonth.rain),
+      rainfallAvg: normal ? Math.round(normal.rain) : Number.NaN,
+      tempAvg: Math.round(((lastMonth.tmax + lastMonth.tmin) / 2) * 10) / 10,
+      ndvi: Number.NaN,
+      soilType: 'unknown',
+    }
+  }, [summary, location.lat, location.lon])
+
   const layer = GIBS_LAYERS.find((option) => option.id === layerId) ?? GIBS_LAYERS[0]
 
   const suitableCrops = crops.filter((c) => c.score >= 60)
@@ -83,6 +103,7 @@ const App = () => {
     <div style={{ minHeight: '100vh', background: `linear-gradient(135deg, ${colors.primary.darkestNight} 0%, ${colors.primary.darkBlue} 50%, ${colors.primary.veryDark} 100%)` }}>
       <Header />
       <main className="mx-auto flex max-w-[1400px] flex-col gap-5 p-4 pb-28 md:p-5 md:pb-5">
+        <ConnectionStatus />
         <Navigation
           tabs={navTabs}
           activeTab={activeTab}
@@ -229,8 +250,11 @@ const App = () => {
         )}
 
         {activeTab === 'alerts' && (
+          <div className="flex flex-col gap-5">
+          <AIInsights fieldData={fieldData} />
           <div className="bg-card rounded-lg p-6">
             <AlertsList location={location.label} latitude={location.lat} longitude={location.lon} />
+          </div>
           </div>
         )}
 

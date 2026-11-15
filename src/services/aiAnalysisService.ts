@@ -1,142 +1,62 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import type { FieldData } from "../types/field";
-import type { RotationScore } from "../types/rotation";
+// AI analysis through the Farm ClimeTech server proxy (/api/analyze).
+// No API key lives in the browser: the server holds GEMINI_API_KEY and AI_MODEL.
+// Without a key the server answers a clearly labelled demo analysis.
+import type { FieldData } from '../types/field'
+import type { RotationScore } from '../types/rotation'
 
-const genAI = new GoogleGenerativeAI(
-  import.meta.env.VITE_GEMINI_API_KEY || "default-key"
-);
-
-interface AnalysisResult {
-  summary: string;
-  risks: string[];
-  recommendations: string[];
-  bestRotation: string;
-  confidence: number;
+export interface AnalysisResult {
+  demo: boolean
+  model?: string
+  summary: string
+  risks: string[]
+  recommendations: string[]
+  alerts: string[]
+  bestRotation: string
+  confidence: number
 }
 
-export async function analyzeFieldConditions(
-  fieldData: FieldData
-): Promise<AnalysisResult> {
-  try {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const UNAVAILABLE: AnalysisResult = {
+  demo: true,
+  summary: 'AI analysis is not available right now. The climate data and scores above still apply.',
+  risks: [],
+  recommendations: ['Check field conditions with your agronomist'],
+  alerts: [],
+  bestRotation: '',
+  confidence: 0,
+}
 
-    const prompt = `You are an expert agronomist analyzing soil and climate data for a Uruguayan farm.
+// One request per field state; the three helpers below share it.
+let last: { key: string; result: Promise<AnalysisResult> } | null = null
 
-Field Data:
-- Soil Moisture: ${fieldData.soilMoisture}% (Optimal: 40-60%)
-- Rainfall (30 days): ${fieldData.rainfall}mm (Historical avg: ${fieldData.rainfallAvg}mm)
-- Vegetation Health (NDVI): ${fieldData.ndvi.toFixed(2)} (Healthy: >0.6)
-- Soil Type: ${fieldData.soilType}
-- Temperature Average: ${fieldData.tempAvg}°C
-
-Provide a JSON response with:
-{
-  "summary": "Brief assessment in English",
-  "risks": ["risk1", "risk2"],
-  "recommendations": ["action1", "action2"],
-  "bestRotation": "rotation name",
-  "confidence": 0-100
-}`;
-
-    const result = await model.generateContent(prompt);
-    const responseText = result.response.text();
-
-    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      throw new Error("No JSON found in response");
-    }
-
-    const analysis = JSON.parse(jsonMatch[0]);
-    return {
-      summary: analysis.summary || "Analysis complete",
-      risks: analysis.risks || [],
-      recommendations: analysis.recommendations || [],
-      bestRotation: analysis.bestRotation || "Cover crop",
-      confidence: analysis.confidence || 75,
-    };
-  } catch (error) {
-    console.error("AI Analysis error:", error);
-    return {
-      summary: "Analysis unavailable",
-      risks: [],
-      recommendations: ["Check field conditions manually"],
-      bestRotation: "Current rotation",
-      confidence: 0,
-    };
+const request = (fieldData: FieldData): Promise<AnalysisResult> => {
+  // Only numbers are sent (no names or free text): OWASP LLM01/LLM02
+  const field = {
+    latitude: Number(fieldData.latitude.toFixed(2)),
+    longitude: Number(fieldData.longitude.toFixed(2)),
+    soilMoisture: fieldData.soilMoisture,
+    rainfall: fieldData.rainfall,
+    rainfallAvg: fieldData.rainfallAvg,
+    tempAvg: fieldData.tempAvg,
+    ndvi: fieldData.ndvi,
   }
+  const key = JSON.stringify(field)
+  if (last?.key === key) return last.result
+  const result = fetch('/api/analyze', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ field }),
+  })
+    .then((r) => (r.ok ? r.json() : UNAVAILABLE))
+    .catch(() => UNAVAILABLE)
+  last = { key, result }
+  return result
 }
 
-export async function predictCropSuitability(
-  rotations: RotationScore[],
-  fieldData: FieldData
-): Promise<RotationScore[]> {
-  try {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+export const analyzeFieldConditions = (fieldData: FieldData): Promise<AnalysisResult> => request(fieldData)
 
-    const rotationList = rotations
-      .map(
-        (r) => `- Rotation ${r.rotationId}: Score ${r.overall}/100`
-      )
-      .join("\n");
+export const generateAlerts = async (fieldData: FieldData): Promise<string[]> => (await request(fieldData)).alerts
 
-    const prompt = `As an expert in crop adaptation to climate, re-score these rotations for a Uruguayan farm:
-
-Current Conditions:
-- Soil Moisture: ${fieldData.soilMoisture}%
-- Annual Rainfall: ${fieldData.rainfall}mm
-- NDVI: ${fieldData.ndvi}
-
-Rotations to evaluate:
-${rotationList}
-
-Respond with JSON array: [{"rotationId": "R0", "scoreAdjustment": -5, "reason": "why"}]`;
-
-    const result = await model.generateContent(prompt);
-    const responseText = result.response.text();
-
-    const jsonMatch = responseText.match(/\[[\s\S]*\]/);
-    if (!jsonMatch) {
-      return rotations;
-    }
-
-    const scores = JSON.parse(jsonMatch[0]);
-    return rotations.map((rotation) => {
-      const score = scores.find((s: any) => s.rotationId === rotation.rotationId);
-      const adjustment = score?.scoreAdjustment || 0;
-      return {
-        ...rotation,
-        overall: Math.max(0, Math.min(100, rotation.overall + adjustment)),
-      };
-    });
-  } catch (error) {
-    console.error("Crop suitability error:", error);
-    return rotations;
-  }
-}
-
-export async function generateAlerts(fieldData: FieldData): Promise<string[]> {
-  try {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-    const prompt = `Generate 1-2 urgent alerts for this farm condition in English:
-- Soil Moisture: ${fieldData.soilMoisture}%
-- Rainfall trend: ${fieldData.rainfall < fieldData.rainfallAvg ? "Below" : "Above"} average
-- Temperature: ${fieldData.tempAvg}°C
-- NDVI: ${fieldData.ndvi}
-
-Respond with JSON array: ["alert1", "alert2"]`;
-
-    const result = await model.generateContent(prompt);
-    const responseText = result.response.text();
-
-    const jsonMatch = responseText.match(/\[[\s\S]*\]/);
-    if (!jsonMatch) {
-      return [];
-    }
-
-    return JSON.parse(jsonMatch[0]);
-  } catch (error) {
-    console.error("Alert generation error:", error);
-    return [];
-  }
-}
+// Rotation scores stay deterministic (computed from NASA data in useRotationScoring);
+// the AI only explains them, it does not change the numbers.
+export const predictCropSuitability = async (rotations: RotationScore[], _fieldData: FieldData): Promise<RotationScore[]> =>
+  rotations
