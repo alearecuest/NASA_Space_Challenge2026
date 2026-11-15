@@ -9,12 +9,20 @@ interface AnnualTrendChartProps {
   summary: ClimateSummary
 }
 
-const options: ChartOptions<'line'> = {
+const options = (yAxisLabel: string): ChartOptions<'line'> => ({
   responsive: true,
   maintainAspectRatio: false,
   interaction: { mode: 'index', intersect: false },
   plugins: { legend: { position: 'bottom' } },
-}
+  scales: {
+    y: {
+      title: {
+        display: true,
+        text: yAxisLabel,
+      },
+    },
+  },
+})
 
 export const AnnualTrendChart = ({ summary }: AnnualTrendChartProps) => {
   const available = ANNUAL_METRICS.filter((metric) => summary.trends[metric] !== null)
@@ -52,6 +60,8 @@ export const AnnualTrendChart = ({ summary }: AnnualTrendChartProps) => {
     ],
   }
 
+  const yAxisLabel = `${meta.label} (${meta.unit})`
+
   return (
     <div>
       <label className="flex items-center gap-2 text-sm">
@@ -69,7 +79,7 @@ export const AnnualTrendChart = ({ summary }: AnnualTrendChartProps) => {
         </select>
       </label>
       <div className="mt-3 h-72">
-        <Line data={data} options={options} />
+        <Line data={data} options={options(yAxisLabel)} />
       </div>
     </div>
   )
