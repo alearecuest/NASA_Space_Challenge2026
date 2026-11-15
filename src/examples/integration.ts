@@ -6,7 +6,7 @@ import { getMeteomaticsWeather, predictPrecipitation } from '../services/meteoma
 import { useOfflineMode, getOfflineData, getLastSyncTime } from '../services/offlineService'
 
 export const exampleIntegration = async () => {
-  console.log('=== FarmClimTech Integration Examples ===')
+  console.log('=== Farm ClimeTech Integration Examples ===')
 
   const fieldCoordinates = { lat: -33.5, lon: -55.5 }
 

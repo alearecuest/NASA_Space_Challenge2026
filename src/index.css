@@ -2,7 +2,7 @@
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
 
-/* FarmClimTech identity tokens (same palette as the presentation) */
+/* Farm ClimeTech identity tokens (same palette as the presentation) */
 @theme {
   --color-night: #0F2A44;
   --color-navy: #163A5C;

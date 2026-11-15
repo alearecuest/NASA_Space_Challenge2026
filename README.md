@@ -12,7 +12,7 @@ In Uruguay, agriculture depends on rainfall and soil moisture. Climate variabili
 
 ## Solution
 
-FarmClimTech combines:
+Farm ClimeTech combines:
 - **NASA satellite data** (POWER, MODIS NDVI, GPM, SMAP)
 - **Local soil properties** (SoilGrids global dataset)
 - **Crop agronomic requirements** (FAO database)

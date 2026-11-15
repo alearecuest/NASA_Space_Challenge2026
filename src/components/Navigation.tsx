@@ -12,7 +12,7 @@ interface NavigationProps {
   onTabChange: (tabId: string) => void
 }
 
-// Line icons (24 grid, 2 px stroke) matching the FarmClimTech design system
+// Line icons (24 grid, 2 px stroke) matching the Farm ClimeTech design system
 const icon = (path: ReactNode) => (
   <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     {path}

@@ -1,6 +1,6 @@
 import type { SelectedLocation } from '../types/location'
 
-export const APP_NAME = 'FarmClimTech'
+export const APP_NAME = 'Farm ClimeTech'
 
 export const DEFAULT_LOCATION: SelectedLocation = {
 	lat: -33.2524,
