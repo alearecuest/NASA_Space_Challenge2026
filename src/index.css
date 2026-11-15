@@ -2,6 +2,24 @@
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
 
+/* FarmClimTech identity tokens (same palette as the presentation) */
+@theme {
+  --color-night: #0F2A44;
+  --color-navy: #163A5C;
+  --color-deep: #08182A;
+  --color-card: #0B1C2E;
+  --color-lime: #A6E36B;
+  --color-field: #4C8C2B;
+  --color-ocre: #D9A441;
+  --color-terra: #C4572A;
+  --color-terra-text: #F08A63;
+  --color-ink: #F4F6F1;
+  --color-sky: #BFD3E6;
+  --color-mute: #8FA3B8;
+  --color-line: rgba(255, 255, 255, 0.15);
+}
+
+
 * {
   font-family: 'Inter', sans-serif;
 }
@@ -73,3 +91,9 @@ a {
 a:hover {
   color: #8ed544;
 }
+
+/* Inputs on dark cards */
+input, select, textarea { color: #F4F6F1; background-color: #08182A; }
+input::placeholder { color: #8FA3B8; }
+/* Visible keyboard focus (WCAG 2.4.7) */
+:focus-visible { outline: 2px solid #A6E36B; outline-offset: 2px; }

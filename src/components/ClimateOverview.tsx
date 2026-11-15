@@ -11,11 +11,11 @@ export const ClimateOverview = ({ summary }: ClimateOverviewProps) => (
     {ANNUAL_METRICS.filter((metric) => metric !== 'soil' || summary.hasSoil).map((metric) => {
       const meta = METRICS[metric]
       return (
-        <div key={metric} className="rounded-lg bg-slate-50 p-3 ring-1 ring-slate-200">
-          <p className="text-xs text-slate-500">{meta.label}</p>
-          <p className="mt-1 text-lg font-semibold text-slate-900">
+        <div key={metric} className="rounded-lg bg-night p-3 ring-1 ring-line">
+          <p className="text-xs text-sky">{meta.label}</p>
+          <p className="mt-1 text-lg font-semibold text-ink">
             {averageOf(summary.annual, metric).toFixed(meta.decimals)}
-            <span className="ml-1 text-xs font-normal text-slate-500">{meta.unit}</span>
+            <span className="ml-1 text-xs font-normal text-sky">{meta.unit}</span>
           </p>
         </div>
       )

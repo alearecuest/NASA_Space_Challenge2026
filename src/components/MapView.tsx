@@ -38,7 +38,7 @@ const ClickHandler = ({ onSelect }: { onSelect: (point: GeoPoint) => void }) => 
 }
 
 export const MapView = ({ location, layer, date, showLabels, onSelect, children }: MapViewProps) => (
-  <div className="h-[460px] overflow-hidden rounded-xl shadow-sm ring-1 ring-slate-200 lg:h-[620px]">
+  <div className="h-[460px] overflow-hidden rounded-xl shadow-sm ring-1 ring-line lg:h-[620px]">
     <MapContainer
       center={[location.lat, location.lon]}
       zoom={DEFAULT_ZOOM}

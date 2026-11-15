@@ -55,7 +55,7 @@ export const OnboardingScreen = ({ onStart }: OnboardingScreenProps) => {
             letterSpacing: '-0.5px',
           }}
         >
-          Farm Climetech
+          FarmClimTech
         </h1>
 
         <p

@@ -1,5 +1,5 @@
 export const TechnicalNotice = () => (
-  <aside className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+  <aside className="rounded-xl border border-ocre bg-ocre/10 p-4 text-sm text-ocre">
     <p className="font-semibold">Decision support, not a replacement for expert advice</p>
     <p className="mt-1">
       FarmClimTech supports the producer and the local agronomist; it does not replace them. Results

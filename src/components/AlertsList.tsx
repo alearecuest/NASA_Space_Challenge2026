@@ -55,11 +55,11 @@ const generateAlerts = (): Alert[] => [
 const getSeverityColor = (severity: string): { bg: string; border: string; icon: string } => {
   switch (severity) {
     case 'critical':
-      return { bg: 'bg-red-50', border: 'border-red-300', icon: '🚨' }
+      return { bg: 'bg-terra/15', border: 'border-terra', icon: '🚨' }
     case 'warning':
-      return { bg: 'bg-amber-50', border: 'border-amber-300', icon: '⚠️' }
+      return { bg: 'bg-ocre/10', border: 'border-ocre', icon: '⚠️' }
     default:
-      return { bg: 'bg-blue-50', border: 'border-blue-300', icon: 'ℹ️' }
+      return { bg: 'bg-night', border: 'border-sky', icon: 'ℹ️' }
   }
 }
 
@@ -69,8 +69,8 @@ export const AlertsList = ({ location, latitude, longitude }: AlertsListProps) =
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-slate-900">Alerts for Your Location</h2>
-        <p className="mt-1 text-sm text-slate-600">
+        <h2 className="text-lg font-semibold text-ink">Alerts for Your Location</h2>
+        <p className="mt-1 text-sm text-sky">
           {location} ({latitude.toFixed(2)}°, {longitude.toFixed(2)}°)
         </p>
       </div>
@@ -86,9 +86,9 @@ export const AlertsList = ({ location, latitude, longitude }: AlertsListProps) =
               <div className="flex gap-3">
                 <span className="text-xl">{colors.icon}</span>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-slate-900">{alert.title}</h3>
-                  <p className="mt-1 text-sm text-slate-700">{alert.description}</p>
-                  <div className="mt-2 flex items-center gap-2 text-xs text-slate-600">
+                  <h3 className="font-semibold text-ink">{alert.title}</h3>
+                  <p className="mt-1 text-sm text-ink">{alert.description}</p>
+                  <div className="mt-2 flex items-center gap-2 text-xs text-sky">
                     <span>
                       Critical months: <span className="font-medium">{alert.actionMonths.join(', ')}</span>
                     </span>
@@ -102,8 +102,8 @@ export const AlertsList = ({ location, latitude, longitude }: AlertsListProps) =
         })}
       </div>
 
-      <div className="rounded-lg bg-slate-50 p-4 text-center text-xs text-slate-600">
-        <p className="font-semibold text-slate-900">Illustrative Alerts</p>
+      <div className="rounded-lg bg-night p-4 text-center text-xs text-sky">
+        <p className="font-semibold text-ink">Illustrative Alerts</p>
         <p className="mt-1">These are example alerts based on typical patterns. Verify with real-time data and local forecasts.</p>
       </div>
     </div>
