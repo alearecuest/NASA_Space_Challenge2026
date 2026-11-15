@@ -1,16 +1,13 @@
 import type { FieldData } from '../types/field'
-import type { RotationScore } from '../types/rotation'
 import { analyzeFieldConditions, generateAlerts } from '../services/aiAnalysisService'
-import { customRotationManager } from '../services/customRotationStorage'
+import { getCustomRotations, saveCustomRotation } from '../services/customRotationStorage'
 import { getCONEATZoneByDepartment } from '../services/coneatService'
 import { getMeteomaticsWeather, predictPrecipitation } from '../services/meteomaticsService'
-import { downloadReportAsJSON, downloadReportAsCSV, generateFarmReport } from '../services/reportService'
 import { useOfflineMode, getOfflineData, getLastSyncTime } from '../services/offlineService'
 
 export const exampleIntegration = async () => {
   console.log('=== Farm Climetech Integration Examples ===')
 
-  const userId = 'user_123'
   const fieldCoordinates = { lat: -33.5, lon: -55.5 }
 
   const fieldData: FieldData = {
@@ -39,16 +36,14 @@ export const exampleIntegration = async () => {
 
   console.log('\n2️⃣ CUSTOM ROTATIONS')
   console.log('Adding custom rotation...')
-  const customRotation = customRotationManager.addCustomRotation(
-    userId,
+  const customRotation = saveCustomRotation(
     'My Soy-Wheat-Cover Crop',
-    ['soya', 'wheat', 'clover'],
-    'Tried and tested on my farm'
+    ['soya', 'wheat', 'clover'] as any
   )
-  console.log('Created:', customRotation.name, 'Score:', customRotation.overall)
+  console.log('Created:', customRotation.name)
 
-  const allRotations = customRotationManager.getAllRotations(userId)
-  console.log('Total rotations available:', allRotations.length)
+  const allRotations = getCustomRotations()
+  console.log('Total custom rotations:', allRotations.length)
 
   console.log('\n3️⃣ CONEAT INTEGRATION')
   console.log('Getting local agronomy data...')
@@ -79,7 +74,7 @@ export const exampleIntegration = async () => {
 
   console.log('\n5️⃣ OFFLINE MODE')
   console.log('Saving to browser cache...')
-  useOfflineMode(fieldData, [] as RotationScore[])
+  useOfflineMode(fieldData, [])
   console.log('Last sync:', getLastSyncTime())
   const offlineData = getOfflineData()
   console.log('Cached field location:', offlineData.fieldData?.location)
