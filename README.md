@@ -1,4 +1,4 @@
-# FarmClimTech: Climate-Resilient Rotation Advisor
+# Farm Climetech: Climate-Resilient Rotation Advisor
 
 **Eyes in the sky, in the farmer's hands.**
 
