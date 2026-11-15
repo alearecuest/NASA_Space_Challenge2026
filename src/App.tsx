@@ -11,7 +11,6 @@ import { RotationComparison } from './components/RotationComparison'
 import { RotationDetail } from './components/RotationDetail'
 import { SoilAnalysis } from './components/SoilAnalysis'
 import { TechnicalNotice } from './components/TechnicalNotice'
-import { UserPreferences } from './components/UserPreferences'
 import { DEFAULT_LOCATION } from './config/constants'
 import { GIBS_LAYERS } from './config/gibsLayers'
 import { useSelectedLocation } from './hooks/useSelectedLocation'
@@ -26,7 +25,9 @@ type TabId = 'map' | 'rotations' | 'crops' | 'alerts' | 'soil' | 'report'
 
 const App = () => {
   const { location, selectFromSearch, selectFromMap } = useSelectedLocation(DEFAULT_LOCATION)
-  const { summary, isLoading: isClimateLoading } = useClimateData(location)
+  const { state, retry: _retry } = useClimateData(location)
+  const summary = state.status === 'ready' ? state.summary : null
+  const isClimateLoading = state.status === 'loading'
   const { scores, ranked } = useRotationScoring(summary)
   const { crops } = useCropSuitability(summary)
 
@@ -149,7 +150,6 @@ const App = () => {
                   <p className="text-slate-600">Loading climate data...</p>
                 ) : ranked.length > 0 ? (
                   <RotationComparison
-                    scores={scores}
                     ranked={ranked}
                     onSelectRotation={(id) => setSelectedRotation(id as RotationId)}
                   />

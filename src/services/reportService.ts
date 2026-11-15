@@ -119,7 +119,7 @@ export const downloadReportAsJSON = (report: FarmReport): void => {
 }
 
 export const downloadReportAsCSV = (report: FarmReport): void => {
-  const rows: string[] = [
+  const rows: string[][] = [
     ['FarmClimTech Report'],
     ['Generated', report.timestamp],
     ['Location', report.location.name, `${report.location.latitude.toFixed(4)}°, ${report.location.longitude.toFixed(4)}°`],

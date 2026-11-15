@@ -1,7 +1,6 @@
 import type { RotationScore } from '../types/rotation'
 
 interface RotationComparisonProps {
-  scores: RotationScore[]
   ranked: RotationScore[]
   onSelectRotation?: (rotationId: string) => void
 }
@@ -21,7 +20,6 @@ const getScoreLabelColor = (score: number): string => {
 }
 
 export const RotationComparison = ({
-  scores,
   ranked,
   onSelectRotation,
 }: RotationComparisonProps) => {

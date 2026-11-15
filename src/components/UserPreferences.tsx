@@ -16,9 +16,6 @@ export const UserPreferences = ({ onSubmit }: UserPreferencesProps) => {
   const [resilience, setResilience] = useState(25)
 
   const handleSliderChange = (metric: string, value: number) => {
-    const remaining = 100 - value
-    const otherMetrics = ['water', 'soil', 'income', 'resilience'].filter((m) => m !== metric)
-
     if (metric === 'water') setWater(value)
     else if (metric === 'soil') setSoil(value)
     else if (metric === 'income') setIncome(value)

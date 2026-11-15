@@ -93,10 +93,8 @@ const calculateSoilScore = (
 
 const calculateIncomeScore = (
   crops: CropName[],
-  summary: ClimateSummary,
+  _summary: ClimateSummary,
 ): { score: number; explanation: string } => {
-  const avgYield = crops.reduce((sum, crop) => sum + CROP_PROFILES[crop].estimatedYield, 0) / crops.length
-
   const avgPrice: Record<CropName, number> = {
     soya: 380,
     maize: 220,

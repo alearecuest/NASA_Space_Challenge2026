@@ -26,7 +26,6 @@ const assessCropSuitability = (
 ): CropSuitability => {
   const crop = CROP_PROFILES[cropId]
   const avgAnnualRain = summary.annual[0]?.rain ?? 0
-  const avgTemp = summary.annual[0]?.meanTemp ?? 0
   const frostDays = summary.annual[0]?.frostDays ?? 0
   const heatDays = summary.annual[0]?.heatDays ?? 0
   const degreeDays = calculateDegreeDays(summary)
@@ -126,7 +125,6 @@ export const findCropsByMonth = (
 
 export const findZonesForCrop = (
   cropId: CropName,
-  minScore = 70,
 ): { suitable: boolean; reason: string } => {
   const crop = CROP_PROFILES[cropId]
 
