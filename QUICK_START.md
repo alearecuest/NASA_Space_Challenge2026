@@ -1,8 +1,8 @@
-# 🌾 Farm Climetech - Ready to Launch
+# Farm Climetech - Ready to Launch
 
-**Status:** ✅ All core features implemented and building successfully
+**Status:** All core features implemented and building successfully
 
-## 🚀 Quick Start (3 steps)
+## Quick Start (3 steps)
 
 ### 1. Create `.env` file
 ```bash
@@ -30,9 +30,9 @@ Open browser to **http://localhost:5173**
 
 ---
 
-## 🎯 What's Ready
+## What's Ready
 
-### ✅ **AI-Powered Analysis**
+### **AI-Powered Analysis**
 - Gemini API integration for intelligent field assessment
 - Automatic crop suitability scoring
 - Smart alert generation
@@ -45,7 +45,7 @@ import { useAIAnalysis } from './hooks/useAIAnalysis'
 const { analysis, alerts, suggestedRotations } = useAIAnalysis(fieldData, rotations)
 ```
 
-### ✅ **Custom Rotations**
+### **Custom Rotations**
 - Users can add unlimited custom crop rotations
 - Auto-scoring: diversity (30%) + nitrogen (40%) + water balance (30%)
 - Persisted in browser localStorage
@@ -61,7 +61,7 @@ import { customRotationManager } from './services/customRotationStorage'
 customRotationManager.addCustomRotation('userId', 'My Rotation', ['Soy', 'Wheat', 'Cover crop'])
 ```
 
-### ✅ **CONEAT Integration (Local Uruguayan Data)**
+### **CONEAT Integration (Local Uruguayan Data)**
 - 6 agricultural zones mapped
 - Climate, soil, frost/drought risk per zone
 - Suitable crops for each zone
@@ -75,13 +75,13 @@ customRotationManager.addCustomRotation('userId', 'My Rotation', ['Soy', 'Wheat'
 - Sur Central (Florida, San José, Flores)
 - Sur Este (Canelones, Montevideo)
 
-### ✅ **Offline Mode**
+### **Offline Mode**
 - All data cached in localStorage
 - Shows "Last synced at: HH:MM"
 - Works perfectly without internet
 - Automatic sync when connection restored
 
-### ✅ **Report Export**
+### **Report Export**
 - **JSON Export:** Full technical data for analysis
 - **CSV Export:** Human-readable spreadsheet format
 - Includes: climate, soil, rotations, risks, recommendations
@@ -95,7 +95,7 @@ downloadReportAsJSON(farmReport)
 downloadReportAsCSV(farmReport)
 ```
 
-### ✅ **Meteomatics Weather API**
+### **Meteomatics Weather API**
 - 10-day weather forecast
 - Historical climate analysis
 - Precipitation prediction
@@ -109,7 +109,7 @@ const weather = await getMeteomaticsWeather(lat, lon)
 const rainfall10days = await predictPrecipitation(lat, lon, 10)
 ```
 
-### ✅ **Logo Integration**
+### **Logo Integration**
 - Farm Climetech logo (`v3.1`) added to `/public/logo.png`
 - Use in components:
 ```tsx
@@ -118,7 +118,7 @@ const rainfall10days = await predictPrecipitation(lat, lon, 10)
 
 ---
 
-## 📂 File Structure
+## File Structure
 
 ```
 src/
@@ -144,7 +144,7 @@ src/
 
 ---
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 ```env
@@ -163,27 +163,27 @@ VITE_NASA_POWER_KEY=          # NASA POWER API (optional)
 
 ---
 
-## 📊 Data Flow
+## Data Flow
 
 ```
 User Input (Field Location)
         ↓
-🌐 NASA APIs (POWER, GIBS, SMAP, NDVI)
+NASA APIs (POWER, GIBS, SMAP, NDVI)
         ↓
-🌤️ Meteomatics Weather API
+Meteomatics Weather API
         ↓
-🤖 Gemini AI Analysis
+Gemini AI Analysis
         ↓
-📈 Scoring & Recommendations
+Scoring & Recommendations
         ↓
-💾 Offline Cache (localStorage)
+Offline Cache (localStorage)
         ↓
-📤 Export (JSON/CSV)
+Export (JSON/CSV)
 ```
 
 ---
 
-## ✨ Key Features Summary
+## Key Features Summary
 
 | Feature | Status | Notes |
 |---------|--------|-------|
@@ -241,16 +241,4 @@ docker run -p 3000:80 farmclimetech
 
 ---
 
-## 📞 Support
 
-All features are **production-ready** and **fully tested** with TypeScript.
-
-For Hackathon:
-- All code in English (no comments, no emojis)
-- Zero external dependencies for core features
-- APIs can run in demo mode without keys
-- Works offline out of the box
-
----
-
-**Happy hacking! 🌾🚀**
