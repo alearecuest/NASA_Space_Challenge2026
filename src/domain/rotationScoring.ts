@@ -19,6 +19,78 @@ const DEFAULT_WEIGHTS: ScoringWeights = {
 
 const BARE_SOIL_MONTHS_THRESHOLD = [9, 10]
 
+export const scoreRotationByCustomCrops = (
+  rotationId: string,
+  crops: CropName[],
+  summary: ClimateSummary,
+  weights: Partial<ScoringWeights> = {},
+): RotationScore => {
+  const finalWeights = { ...DEFAULT_WEIGHTS, ...weights }
+
+  const waterResult = calculateWaterScore(crops, summary)
+  const soilResult = calculateSoilScore(crops, summary)
+  const incomeResult = calculateIncomeScore(crops, summary)
+  const resilienceResult = calculateResilienceScore(crops, summary)
+
+  const overallScore =
+    waterResult.score * finalWeights.water +
+    soilResult.score * finalWeights.soil +
+    incomeResult.score * finalWeights.income +
+    resilienceResult.score * finalWeights.resilience
+
+  const monthlyBare = calculateMonthlyBareSoil(crops)
+  const barelySoilMonths = monthlyBare.reduce<number[]>((acc, val, idx) => {
+    if (val < 0.3) acc.push(idx + 1)
+    return acc
+  }, [])
+
+  return {
+    rotationId: rotationId as RotationId,
+    overall: Math.round(overallScore * 10) / 10,
+    water: Math.round(waterResult.score * 10) / 10,
+    soil: Math.round(soilResult.score * 10) / 10,
+    income: Math.round(incomeResult.score * 10) / 10,
+    resilience: Math.round(resilienceResult.score * 10) / 10,
+    explanation: {
+      water: waterResult.explanation,
+      soil: soilResult.explanation,
+      income: incomeResult.explanation,
+      resilience: resilienceResult.explanation,
+    },
+    evidenceLinks: [
+      { metric: 'Annual rainfall', value: `${summary.annual[0]?.rain ?? 0} mm`, source: 'NASA POWER' },
+      {
+        metric: 'Water balance',
+        value: `${summary.annual[0]?.waterBalance ?? 0} mm`,
+        source: 'NASA POWER',
+      },
+      { metric: 'Frost days', value: `${summary.annual[0]?.frostDays ?? 0} days/year`, source: 'NASA POWER' },
+      { metric: 'Heat stress days', value: `${summary.annual[0]?.heatDays ?? 0} days/year`, source: 'NASA POWER' },
+      { metric: 'Extreme rain days', value: `${summary.annual[0]?.extremeRainDays ?? 0} days/year`, source: 'GPM' },
+    ],
+    risksToVerify: [
+      'Verify soil infiltration capacity with local agronomist.',
+      'Check market access for selected crops.',
+      'Confirm equipment availability for machinery-intensive crops.',
+      'Assess water availability for irrigation if needed.',
+      'Review frost history for frost-sensitive crops.',
+    ],
+    missingData: [
+      'Local soil type and structure (use SoilGrids approximation).',
+      'Current farm machinery and capacity.',
+      'Local market prices and contracts.',
+      'Water source availability and regulations.',
+      'Pest and disease pressure history.',
+    ],
+    soilCoverage: monthlyBare.map((coverage, idx) => ({
+      month: idx + 1,
+      coverage: Math.round(coverage * 100),
+      risk: coverage > 0.7 ? 'good' : coverage > 0.4 ? 'moderate' : coverage > 0.1 ? 'low' : 'bare',
+    })),
+    barelySoilMonths,
+  }
+}
+
 const calculateWaterScore = (
   crops: CropName[],
   summary: ClimateSummary,

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { AddCustomRotation } from './components/AddCustomRotation'
 import { AlertsList } from './components/AlertsList'
 import { ClimatePanel } from './components/ClimatePanel'
 import { CropSuitabilityGrid } from './components/CropSuitabilityGrid'
@@ -16,10 +17,11 @@ import { GIBS_LAYERS } from './config/gibsLayers'
 import { useSelectedLocation } from './hooks/useSelectedLocation'
 import { useClimateData } from './hooks/useClimateData'
 import { useRotationScoring, useCropSuitability } from './hooks/useRotationScoring'
+import { useCustomRotations } from './hooks/useCustomRotations'
 import { defaultGibsDate } from './services/gibsService'
 import { getCachedOrFetchSoil } from './services/soilGridsService'
 import type { SoilProperties } from './services/soilGridsService'
-import type { RotationId } from './types/rotation'
+import type { RotationId, RotationScore } from './types/rotation'
 
 type TabId = 'map' | 'rotations' | 'crops' | 'alerts' | 'soil' | 'report'
 
@@ -28,8 +30,9 @@ const App = () => {
   const { state, retry: _retry } = useClimateData(location)
   const summary = state.status === 'ready' ? state.summary : null
   const isClimateLoading = state.status === 'loading'
-  const { scores, ranked } = useRotationScoring(summary)
+  const { scores, ranked, scoreCustom } = useRotationScoring(summary)
   const { crops } = useCropSuitability(summary)
+  const { rotations: customRotations, add: addCustomRotation, remove: removeCustomRotation } = useCustomRotations()
 
   const [layerId, setLayerId] = useState(GIBS_LAYERS[0].id)
   const [date, setDate] = useState(defaultGibsDate)
@@ -37,6 +40,8 @@ const App = () => {
   const [activeTab, setActiveTab] = useState<TabId>('map')
   const [selectedRotation, setSelectedRotation] = useState<RotationId | null>(null)
   const [soilData, setSoilData] = useState<SoilProperties | null>(null)
+  const [showAddRotation, setShowAddRotation] = useState(false)
+  const [customScores, setCustomScores] = useState<RotationScore[]>([])
 
   useEffect(() => {
     getCachedOrFetchSoil(location)
@@ -44,10 +49,21 @@ const App = () => {
       .catch(() => setSoilData(null))
   }, [location])
 
+  useEffect(() => {
+    if (summary) {
+      const scored = customRotations
+        .map((rot) => scoreCustom(rot.id, rot.crops))
+        .filter((s) => s !== null) as RotationScore[]
+      setCustomScores(scored)
+    }
+  }, [customRotations, summary, scoreCustom])
+
   const layer = GIBS_LAYERS.find((option) => option.id === layerId) ?? GIBS_LAYERS[0]
 
   const suitableCrops = crops.filter((c) => c.score >= 60)
   const currentRotation = scores.find((s) => s.rotationId === 'R0') || null
+
+  const allRotations = [...ranked, ...customScores].sort((a, b) => b.overall - a.overall)
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -139,20 +155,78 @@ const App = () => {
 
         {activeTab === 'rotations' && (
           <div className="bg-white rounded-lg p-6">
-            {selectedRotation && ranked.length > 0 ? (
+            <div className="mb-6 flex justify-between items-center">
+              <h2 className="text-xl font-bold text-slate-900">Crop Rotations</h2>
+              <button
+                onClick={() => setShowAddRotation(!showAddRotation)}
+                style={{
+                  padding: '10px 20px',
+                  backgroundColor: '#A6E36B',
+                  border: 'none',
+                  borderRadius: '8px',
+                  color: '#0F2A44',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  fontSize: '1em',
+                }}
+              >
+                {showAddRotation ? 'Cancel' : '+ Add Rotation'}
+              </button>
+            </div>
+
+            {showAddRotation && (
+              <AddCustomRotation
+                onAdd={(name, crops) => {
+                  addCustomRotation(name, crops)
+                  setShowAddRotation(false)
+                }}
+                onCancel={() => setShowAddRotation(false)}
+              />
+            )}
+
+            {selectedRotation && allRotations.length > 0 ? (
               <RotationDetail
-                score={ranked.find((s) => s.rotationId === selectedRotation)!}
+                score={allRotations.find((s) => s.rotationId === selectedRotation)!}
                 onBack={() => setSelectedRotation(null)}
               />
             ) : (
               <>
                 {isClimateLoading ? (
                   <p className="text-slate-600">Loading climate data...</p>
-                ) : ranked.length > 0 ? (
-                  <RotationComparison
-                    ranked={ranked}
-                    onSelectRotation={(id) => setSelectedRotation(id as RotationId)}
-                  />
+                ) : allRotations.length > 0 ? (
+                  <>
+                    <RotationComparison
+                      ranked={allRotations}
+                      onSelectRotation={(id) => setSelectedRotation(id as RotationId)}
+                    />
+                    {customScores.length > 0 && (
+                      <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#f0f9ff', borderRadius: '8px', borderLeft: '4px solid #A6E36B' }}>
+                        <p style={{ color: '#0F2A44', fontWeight: 'bold', marginBottom: '10px' }}>
+                          {customScores.length} custom rotation{customScores.length !== 1 ? 's' : ''} added
+                        </p>
+                        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                          {customRotations.map((rot) => (
+                            <button
+                              key={rot.id}
+                              onClick={() => removeCustomRotation(rot.id)}
+                              style={{
+                                padding: '8px 12px',
+                                backgroundColor: '#fee2e2',
+                                border: '1px solid #fca5a5',
+                                borderRadius: '6px',
+                                color: '#991b1b',
+                                cursor: 'pointer',
+                                fontSize: '0.9em',
+                              }}
+                              title="Click to delete this custom rotation"
+                            >
+                              ✕ {rot.name}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
                 ) : (
                   <p className="text-slate-600">No rotation data available. Check your location.</p>
                 )}

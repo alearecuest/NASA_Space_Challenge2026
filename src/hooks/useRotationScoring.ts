@@ -1,13 +1,14 @@
 import { useMemo } from 'react'
 import type { ClimateSummary } from '../types/climate'
-import type { RotationScore, RotationId } from '../types/rotation'
-import { scoreAllRotations, rankRotations, scoreRotation } from '../domain/rotationScoring'
+import type { RotationScore, RotationId, CropName } from '../types/rotation'
+import { scoreAllRotations, rankRotations, scoreRotation, scoreRotationByCustomCrops } from '../domain/rotationScoring'
 import { assessAllCrops } from '../domain/cropSuitability'
 
 interface RotationScoringState {
   scores: RotationScore[]
   ranked: RotationScore[]
   isLoading: boolean
+  scoreCustom: (rotationId: string, crops: CropName[]) => RotationScore | null
 }
 
 interface CropSuitabilityState {
@@ -18,13 +19,26 @@ interface CropSuitabilityState {
 export const useRotationScoring = (summary: ClimateSummary | null): RotationScoringState => {
   return useMemo(() => {
     if (!summary) {
-      return { scores: [], ranked: [], isLoading: true }
+      return {
+        scores: [],
+        ranked: [],
+        isLoading: true,
+        scoreCustom: () => null,
+      }
     }
 
     const scores = scoreAllRotations(summary)
     const ranked = rankRotations(scores)
 
-    return { scores, ranked, isLoading: false }
+    const scoreCustom = (rotationId: string, crops: CropName[]): RotationScore | null => {
+      try {
+        return scoreRotationByCustomCrops(rotationId, crops, summary)
+      } catch {
+        return null
+      }
+    }
+
+    return { scores, ranked, isLoading: false, scoreCustom }
   }, [summary])
 }
 
@@ -53,3 +67,4 @@ export const useCropSuitability = (summary: ClimateSummary | null): CropSuitabil
     return { crops, isLoading: false }
   }, [summary])
 }
+
