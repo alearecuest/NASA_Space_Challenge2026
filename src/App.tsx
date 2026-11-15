@@ -1,4 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { AIInsights } from './components/AIInsights'
+import { ConnectionStatus } from './components/ConnectionStatus'
+import type { FieldData } from './types/field'
 import { AddCustomRotation } from './components/AddCustomRotation'
 import { AlertsList } from './components/AlertsList'
 import { ClimatePanel } from './components/ClimatePanel'
@@ -63,6 +66,23 @@ const App = () => {
     }
   }, [customRotations, summary, scoreCustom])
 
+  // Field indicators for the AI layer, built only from NASA POWER numbers
+  const fieldData = useMemo<FieldData | null>(() => {
+    const lastMonth = summary?.monthly.at(-1)
+    if (!summary || !lastMonth) return null
+    const normal = summary.climatology.find((c) => c.month === lastMonth.month)
+    return {
+      latitude: location.lat,
+      longitude: location.lon,
+      soilMoisture: summary.hasSoil ? Math.round(lastMonth.soil * 100) : Number.NaN,
+      rainfall: Math.round(lastMonth.rain),
+      rainfallAvg: normal ? Math.round(normal.rain) : Number.NaN,
+      tempAvg: Math.round(((lastMonth.tmax + lastMonth.tmin) / 2) * 10) / 10,
+      ndvi: Number.NaN,
+      soilType: 'unknown',
+    }
+  }, [summary, location.lat, location.lon])
+
   const layer = GIBS_LAYERS.find((option) => option.id === layerId) ?? GIBS_LAYERS[0]
 
   const suitableCrops = crops.filter((c) => c.score >= 60)
@@ -71,18 +91,19 @@ const App = () => {
   const allRotations = [...ranked, ...customScores].sort((a, b) => b.overall - a.overall)
 
   const navTabs = [
-    { id: 'map', label: '🗺️ Map & Climate' },
-    { id: 'rotations', label: '🌱 Rotations' },
-    { id: 'crops', label: '🌾 Crops' },
-    { id: 'alerts', label: '⚠️ Alerts' },
-    { id: 'soil', label: '🌍 Soil' },
-    { id: 'report', label: '📊 Report' },
+    { id: 'map', label: 'Field' },
+    { id: 'rotations', label: 'Rotations' },
+    { id: 'crops', label: 'Crops' },
+    { id: 'alerts', label: 'Alerts' },
+    { id: 'soil', label: 'Soil' },
+    { id: 'report', label: 'Report' },
   ]
 
   return (
     <div style={{ minHeight: '100vh', background: `linear-gradient(135deg, ${colors.primary.darkestNight} 0%, ${colors.primary.darkBlue} 50%, ${colors.primary.veryDark} 100%)` }}>
       <Header />
-      <main style={{ maxWidth: '1400px', margin: '0 auto', padding: spacing.xl, display: 'flex', flexDirection: 'column', gap: spacing.xl }}>
+      <main className="mx-auto flex max-w-[1400px] flex-col gap-5 p-4 pb-28 md:p-5 md:pb-5">
+        <ConnectionStatus />
         <Navigation
           tabs={navTabs}
           activeTab={activeTab}
@@ -93,15 +114,15 @@ const App = () => {
         />
 
         {activeTab === 'map' && (
-          <div style={{ display: 'grid', gap: spacing.xl, gridTemplateColumns: 'auto 1fr', gridAutoColumns: 'minmax(0, 1fr)' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg, maxWidth: '340px' }}>
+          <div className="grid gap-5 md:grid-cols-[340px_minmax(0,1fr)]">
+            <div className="flex flex-col gap-4">
               <LocationSearch onSelect={selectFromSearch} />
-              <section className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
-                <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+              <section className="rounded-xl bg-card p-4 shadow-sm ring-1 ring-line">
+                <h2 className="text-sm font-semibold uppercase tracking-wide text-sky">
                   Selected location
                 </h2>
                 <p className="mt-1 font-medium">{location.label}</p>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-sky">
                   {location.lat.toFixed(4)}°, {location.lon.toFixed(4)}°
                 </p>
               </section>
@@ -129,9 +150,9 @@ const App = () => {
         )}
 
         {activeTab === 'rotations' && (
-          <div className="bg-white rounded-lg p-6">
+          <div className="bg-card rounded-lg p-6">
             <div className="mb-6 flex justify-between items-center">
-              <h2 className="text-xl font-bold text-slate-900">Crop Rotations</h2>
+              <h2 className="text-xl font-bold text-ink">Crop Rotations</h2>
               <button
                 onClick={() => setShowAddRotation(!showAddRotation)}
                 style={{
@@ -167,7 +188,7 @@ const App = () => {
             ) : (
               <>
                 {isClimateLoading ? (
-                  <p className="text-slate-600">Loading climate data...</p>
+                  <p className="text-sky">Loading climate data...</p>
                 ) : allRotations.length > 0 ? (
                   <>
                     <RotationComparison
@@ -203,7 +224,7 @@ const App = () => {
                     )}
                   </>
                 ) : (
-                  <p className="text-slate-600">No rotation data available. Check your location.</p>
+                  <p className="text-sky">No rotation data available. Check your location.</p>
                 )}
               </>
             )}
@@ -211,9 +232,9 @@ const App = () => {
         )}
 
         {activeTab === 'crops' && (
-          <div className="bg-white rounded-lg p-6">
+          <div className="bg-card rounded-lg p-6">
             {isClimateLoading ? (
-              <p className="text-slate-600">Loading crop suitability data...</p>
+              <p className="text-sky">Loading crop suitability data...</p>
             ) : suitableCrops.length > 0 ? (
               <>
                 <CropSuitabilityGrid
@@ -223,14 +244,17 @@ const App = () => {
                 />
               </>
             ) : (
-              <p className="text-slate-600">No suitable crops found for your location.</p>
+              <p className="text-sky">No suitable crops found for your location.</p>
             )}
           </div>
         )}
 
         {activeTab === 'alerts' && (
-          <div className="bg-white rounded-lg p-6">
+          <div className="flex flex-col gap-5">
+          <AIInsights fieldData={fieldData} />
+          <div className="bg-card rounded-lg p-6">
             <AlertsList location={location.label} latitude={location.lat} longitude={location.lon} />
+          </div>
           </div>
         )}
 
@@ -252,9 +276,9 @@ const App = () => {
         )}
 
         {activeTab === 'report' && (
-          <div className="bg-white rounded-lg p-6">
+          <div className="bg-card rounded-lg p-6">
             {isClimateLoading ? (
-              <p className="text-slate-600">Generating comprehensive farm report...</p>
+              <p className="text-sky">Generating comprehensive farm report...</p>
             ) : (
               <FarmReportView
                 location={location}
@@ -269,7 +293,7 @@ const App = () => {
         )}
       </main>
 
-      <footer className="mt-12 bg-slate-100 py-6">
+      <footer className="mt-12 bg-night py-6">
         <div className="mx-auto max-w-7xl px-4">
           <TechnicalNotice />
         </div>

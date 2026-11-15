@@ -6,17 +6,17 @@ interface RotationComparisonProps {
 }
 
 const getColorByScore = (score: number): string => {
-  if (score >= 80) return 'border-emerald-500 bg-emerald-50'
-  if (score >= 65) return 'border-amber-400 bg-amber-50'
-  if (score >= 50) return 'border-orange-400 bg-orange-50'
-  return 'border-red-400 bg-red-50'
+  if (score >= 80) return 'border-lime bg-lime/10'
+  if (score >= 65) return 'border-ocre bg-ocre/10'
+  if (score >= 50) return 'border-ocre bg-ocre/10'
+  return 'border-terra bg-terra/15'
 }
 
 const getScoreLabelColor = (score: number): string => {
-  if (score >= 80) return 'text-emerald-700 bg-emerald-100'
-  if (score >= 65) return 'text-amber-700 bg-amber-100'
-  if (score >= 50) return 'text-orange-700 bg-orange-100'
-  return 'text-red-700 bg-red-100'
+  if (score >= 80) return 'text-lime bg-lime/10'
+  if (score >= 65) return 'text-ocre bg-ocre/10'
+  if (score >= 50) return 'text-ocre bg-ocre/10'
+  return 'text-terra-text bg-terra/15'
 }
 
 export const RotationComparison = ({
@@ -26,8 +26,8 @@ export const RotationComparison = ({
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-slate-900">Compare Rotation Strategies</h2>
-        <p className="mt-1 text-sm text-slate-600">
+        <h2 className="text-lg font-semibold text-ink">Compare Rotation Strategies</h2>
+        <p className="mt-1 text-sm text-sky">
           Ranked by overall resilience score across water, soil, income, and climate adaptation.
         </p>
       </div>
@@ -42,15 +42,15 @@ export const RotationComparison = ({
             <div className="flex items-start justify-between gap-3">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl font-bold text-slate-900">#{index + 1}</span>
+                  <span className="text-2xl font-bold text-ink">#{index + 1}</span>
                   <div>
-                    <h3 className="font-semibold text-slate-900">
+                    <h3 className="font-semibold text-ink">
                       {score.rotationId === 'R0' && 'Continuous Soya'}
                       {score.rotationId === 'R1' && 'Cover Crop Intensive'}
                       {score.rotationId === 'R2' && 'Soya–Maize–Wheat'}
                       {score.rotationId === 'R3' && 'Agriculture–Pasture'}
                     </h3>
-                    <p className="text-xs text-slate-600">
+                    <p className="text-xs text-sky">
                       {score.rotationId === 'R0' && 'Current baseline'}
                       {score.rotationId === 'R1' && 'Minimize bare soil'}
                       {score.rotationId === 'R2' && 'Diversified crops'}
@@ -65,30 +65,30 @@ export const RotationComparison = ({
             </div>
 
             <div className="mt-3 grid grid-cols-4 gap-2 text-xs">
-              <div className="rounded bg-white/60 p-2 text-center">
-                <div className="font-semibold text-slate-900">{score.water}</div>
-                <div className="text-slate-500">Water</div>
+              <div className="rounded bg-card/60 p-2 text-center">
+                <div className="font-semibold text-ink">{score.water}</div>
+                <div className="text-sky">Water</div>
               </div>
-              <div className="rounded bg-white/60 p-2 text-center">
-                <div className="font-semibold text-slate-900">{score.soil}</div>
-                <div className="text-slate-500">Soil</div>
+              <div className="rounded bg-card/60 p-2 text-center">
+                <div className="font-semibold text-ink">{score.soil}</div>
+                <div className="text-sky">Soil</div>
               </div>
-              <div className="rounded bg-white/60 p-2 text-center">
-                <div className="font-semibold text-slate-900">{score.income}</div>
-                <div className="text-slate-500">Income</div>
+              <div className="rounded bg-card/60 p-2 text-center">
+                <div className="font-semibold text-ink">{score.income}</div>
+                <div className="text-sky">Income</div>
               </div>
-              <div className="rounded bg-white/60 p-2 text-center">
-                <div className="font-semibold text-slate-900">{score.resilience}</div>
-                <div className="text-slate-500">Resilience</div>
+              <div className="rounded bg-card/60 p-2 text-center">
+                <div className="font-semibold text-ink">{score.resilience}</div>
+                <div className="text-sky">Resilience</div>
               </div>
             </div>
           </button>
         ))}
       </div>
 
-      <div className="rounded-lg bg-slate-50 p-4 text-sm text-slate-700">
+      <div className="rounded-lg bg-night p-4 text-sm text-ink">
         <p className="font-semibold">Illustrative prototype</p>
-        <p className="mt-1 text-xs text-slate-600">Scores are estimates based on NASA climate data and crop profiles. Always consult with a local agronomist before making decisions.</p>
+        <p className="mt-1 text-xs text-sky">Scores are estimates based on NASA climate data and crop profiles. Always consult with a local agronomist before making decisions.</p>
       </div>
     </div>
   )

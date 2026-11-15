@@ -65,11 +65,11 @@ export const AnnualTrendChart = ({ summary }: AnnualTrendChartProps) => {
   return (
     <div>
       <label className="flex items-center gap-2 text-sm">
-        <span className="font-medium text-slate-600">Indicator</span>
+        <span className="font-medium text-sky">Indicator</span>
         <select
           value={metric}
           onChange={(event) => setSelected(event.target.value as AnnualMetric)}
-          className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm"
+          className="rounded-lg border border-line px-3 py-1.5 text-sm"
         >
           {available.map((option) => (
             <option key={option} value={option}>

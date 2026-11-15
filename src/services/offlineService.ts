@@ -54,6 +54,14 @@ export const useOfflineMode = (fieldData: FieldData | null, rotations: RotationS
 }
 
 export const getLastSyncTime = (): string => {
-  const data = getOfflineData()
-  return data.lastSyncAt ? new Date(data.lastSyncAt).toLocaleTimeString() : 'Never'
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) return 'not yet'
+    const at = new Date(JSON.parse(raw).lastSyncAt)
+    const sameDay = at.toDateString() === new Date().toDateString()
+    const time = at.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    return sameDay ? `today ${time}` : `${at.toLocaleDateString()} ${time}`
+  } catch {
+    return 'not yet'
+  }
 }

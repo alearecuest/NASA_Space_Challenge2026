@@ -13,13 +13,13 @@ interface ClimatePanelProps {
 
 const SectionTitle = ({ title, hint }: { title: string; hint?: string }) => (
   <div className="mb-3">
-    <h3 className="text-base font-semibold text-slate-900">{title}</h3>
-    {hint && <p className="text-sm text-slate-500">{hint}</p>}
+    <h3 className="text-base font-semibold text-ink">{title}</h3>
+    {hint && <p className="text-sm text-sky">{hint}</p>}
   </div>
 )
 
 const DataNotes = ({ summary }: { summary: ClimateSummary }) => (
-  <ul className="list-disc space-y-1 pl-5 text-xs text-slate-500">
+  <ul className="list-disc space-y-1 pl-5 text-xs text-sky">
     <li>
       Source: NASA POWER daily data (MERRA-2 reanalysis and satellite-based rainfall) on a 0.5° grid, roughly 55 km
       per cell. It is not a weather station measurement.
@@ -43,24 +43,24 @@ export const ClimatePanel = ({ location }: ClimatePanelProps) => {
   const { state, retry } = useClimateData(location)
 
   return (
-    <section className="space-y-6 rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+    <section className="space-y-6 rounded-xl bg-card p-5 shadow-sm ring-1 ring-line">
       <header>
-        <h2 className="text-lg font-semibold text-slate-900">Climate of {location.label}</h2>
-        <p className="text-sm text-slate-500">
+        <h2 className="text-lg font-semibold text-ink">Climate of {location.label}</h2>
+        <p className="text-sm text-sky">
           Long-term climate and trends from NASA POWER for the selected location.
         </p>
       </header>
 
       {state.status === 'loading' && (
         <div role="status" className="space-y-3">
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-sky">
             Loading NASA POWER data
             {state.progress.total > 0 && ` (${state.progress.done} of ${state.progress.total} requests)`}. The first
             load of a location can take up to 30 seconds.
           </p>
-          <div className="h-2 overflow-hidden rounded-full bg-slate-100">
+          <div className="h-2 overflow-hidden rounded-full bg-night">
             <div
-              className="h-full bg-emerald-600 transition-all"
+              className="h-full bg-lime transition-all"
               style={{
                 width: `${state.progress.total > 0 ? (state.progress.done / state.progress.total) * 100 : 5}%`,
               }}
@@ -68,19 +68,19 @@ export const ClimatePanel = ({ location }: ClimatePanelProps) => {
           </div>
           <div className="grid animate-pulse gap-3 md:grid-cols-4">
             {Array.from({ length: 4 }, (_, index) => (
-              <div key={index} className="h-16 rounded-lg bg-slate-100" />
+              <div key={index} className="h-16 rounded-lg bg-night" />
             ))}
           </div>
         </div>
       )}
 
       {state.status === 'error' && (
-        <div role="alert" className="rounded-lg bg-red-50 p-4 text-sm text-red-800 ring-1 ring-red-200">
+        <div role="alert" className="rounded-lg bg-terra/15 p-4 text-sm text-terra-text ring-1 ring-terra/40">
           <p>{state.message}</p>
           <button
             type="button"
             onClick={retry}
-            className="mt-3 rounded-lg bg-red-700 px-3 py-1.5 text-white hover:bg-red-800"
+            className="mt-3 rounded-lg bg-terra px-3 py-1.5 text-ink hover:bg-terra/90"
           >
             Try again
           </button>
@@ -89,7 +89,7 @@ export const ClimatePanel = ({ location }: ClimatePanelProps) => {
 
       {state.status === 'ready' && (
         <>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-sky">
             Data cell centred at {state.cell.lat.toFixed(2)}°, {state.cell.lon.toFixed(2)}°
           </p>
           <div>

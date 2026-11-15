@@ -6,10 +6,10 @@ interface RiskCalendarProps {
 }
 
 const LEVEL_CLASSES: Record<RiskLevel, string> = {
-  none: 'bg-slate-100 text-slate-400',
-  low: 'bg-emerald-100 text-emerald-800',
-  moderate: 'bg-amber-200 text-amber-900',
-  high: 'bg-red-300 text-red-900',
+  none: 'bg-night text-mute',
+  low: 'bg-lime/10 text-lime',
+  moderate: 'bg-ocre text-card',
+  high: 'bg-terra text-ink',
 }
 
 const LEGEND: { level: RiskLevel; label: string }[] = [
@@ -25,9 +25,9 @@ export const RiskCalendar = ({ rows }: RiskCalendarProps) => (
       <table className="w-full min-w-[720px] border-separate border-spacing-1 text-center text-xs">
         <thead>
           <tr>
-            <th className="w-32 text-left font-medium text-slate-500">Risk</th>
+            <th className="w-32 text-left font-medium text-sky">Risk</th>
             {MONTH_LABELS.map((month) => (
-              <th key={month} className="font-medium text-slate-500">
+              <th key={month} className="font-medium text-sky">
                 {month}
               </th>
             ))}
@@ -36,9 +36,9 @@ export const RiskCalendar = ({ rows }: RiskCalendarProps) => (
         <tbody>
           {rows.map((row) => (
             <tr key={row.key}>
-              <th scope="row" title={row.description} className="text-left text-sm font-medium text-slate-700">
+              <th scope="row" title={row.description} className="text-left text-sm font-medium text-ink">
                 {row.label}
-                <span className="block text-[10px] font-normal text-slate-400">{row.unit}</span>
+                <span className="block text-[10px] font-normal text-mute">{row.unit}</span>
               </th>
               {row.values.map((value, index) => (
                 <td
@@ -54,14 +54,14 @@ export const RiskCalendar = ({ rows }: RiskCalendarProps) => (
         </tbody>
       </table>
     </div>
-    <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-slate-600">
+    <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-sky">
       {LEGEND.map((item) => (
         <span key={item.level} className="flex items-center gap-1">
           <span className={`inline-block h-3 w-3 rounded ${LEVEL_CLASSES[item.level].split(' ')[0]}`} />
           {item.label}
         </span>
       ))}
-      <span className="text-slate-500">Thresholds are indicative; confirm with a local agronomist.</span>
+      <span className="text-sky">Thresholds are indicative; confirm with a local agronomist.</span>
     </div>
   </div>
 )

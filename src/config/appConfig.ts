@@ -1,4 +1,4 @@
-// Environment configuration for FarmClimTech
+// Environment configuration for Farm ClimeTech
 
 export const config = {
   powerApi: {
@@ -20,7 +20,7 @@ export const config = {
   },
 
   app: {
-    title: 'FarmClimTech',
+    title: 'Farm ClimeTech',
     version: '0.1.0',
     defaultLocation: {
       name: 'Soriano, Uruguay',

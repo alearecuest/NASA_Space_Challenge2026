@@ -19,8 +19,8 @@ export const LayerControls = ({
   onDateChange,
   onLabelsChange,
 }: LayerControlsProps) => (
-  <section className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
-    <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">NASA map layers</h2>
+  <section className="rounded-xl bg-card p-4 shadow-sm ring-1 ring-line">
+    <h2 className="text-sm font-semibold uppercase tracking-wide text-sky">NASA map layers</h2>
     <div className="mt-2 space-y-2">
       {GIBS_LAYERS.map((option) => (
         <label key={option.id} className="flex cursor-pointer items-start gap-2 text-sm">
@@ -29,24 +29,24 @@ export const LayerControls = ({
             name="gibs-layer"
             checked={option.id === layer.id}
             onChange={() => onLayerChange(option.id)}
-            className="mt-1 accent-emerald-700"
+            className="mt-1 accent-lime"
           />
           <span>
             <span className="font-medium">{option.label}</span>
-            <span className="block text-xs text-slate-500">{option.description}</span>
+            <span className="block text-xs text-sky">{option.description}</span>
           </span>
         </label>
       ))}
     </div>
     {layer.timeMode !== 'none' && (
       <label className="mt-3 block text-sm">
-        <span className="text-xs font-medium text-slate-500">Imagery date</span>
+        <span className="text-xs font-medium text-sky">Imagery date</span>
         <input
           type="date"
           value={date}
           max={defaultGibsDate()}
           onChange={(event) => event.target.value && onDateChange(event.target.value)}
-          className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm"
+          className="mt-1 block w-full rounded-lg border border-line px-3 py-1.5 text-sm"
         />
       </label>
     )}
@@ -55,7 +55,7 @@ export const LayerControls = ({
         type="checkbox"
         checked={showLabels}
         onChange={(event) => onLabelsChange(event.target.checked)}
-        className="accent-emerald-700"
+        className="accent-lime"
       />
       Show place labels
     </label>

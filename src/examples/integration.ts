@@ -6,7 +6,7 @@ import { getMeteomaticsWeather, predictPrecipitation } from '../services/meteoma
 import { useOfflineMode, getOfflineData, getLastSyncTime } from '../services/offlineService'
 
 export const exampleIntegration = async () => {
-  console.log('=== Farm Climetech Integration Examples ===')
+  console.log('=== Farm ClimeTech Integration Examples ===')
 
   const fieldCoordinates = { lat: -33.5, lon: -55.5 }
 
@@ -58,15 +58,10 @@ export const exampleIntegration = async () => {
   console.log('\n4️⃣ WEATHER FORECAST')
   console.log('Getting next 10 days weather...')
   try {
-    const weather = await getMeteomaticsWeather(
-      fieldData.latitude,
-      fieldData.longitude,
-      new Date(),
-      new Date(Date.now() + 10 * 24 * 60 * 60 * 1000)
-    )
+    const weather = await getMeteomaticsWeather(fieldData.latitude, fieldData.longitude)
     console.log('Weather data points:', weather.length)
 
-    const rainfall10 = await predictPrecipitation(fieldData.latitude, fieldData.longitude, 10)
+    const rainfall10 = await predictPrecipitation(fieldData.latitude, fieldData.longitude)
     console.log('Predicted rainfall (10 days):', rainfall10 + 'mm')
   } catch (error) {
     console.log('Meteomatics service offline (demo mode)')

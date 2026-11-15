@@ -1,12 +1,23 @@
 import { useState, useEffect, useCallback } from 'react'
 import { analyzeFieldConditions, predictCropSuitability, generateAlerts } from '../services/aiAnalysisService'
+import type { AnalysisResult } from '../services/aiAnalysisService'
 import { getOfflineData, useOfflineMode, isOnline, getLastSyncTime } from '../services/offlineService'
 import { generateFarmReport } from '../services/reportService'
 import type { FieldData } from '../types/field'
 import type { RotationScore } from '../types/rotation'
 
+const ANALYSIS_KEY = 'farmclimetech_last_analysis'
+const loadCachedAnalysis = (): AnalysisResult | null => {
+  try {
+    const raw = localStorage.getItem(ANALYSIS_KEY)
+    return raw ? (JSON.parse(raw) as AnalysisResult) : null
+  } catch {
+    return null
+  }
+}
+
 interface UseAIAnalysisResult {
-  analysis: any | null
+  analysis: AnalysisResult | null
   alerts: string[]
   suggestedRotations: RotationScore[]
   isLoading: boolean
@@ -20,7 +31,7 @@ export const useAIAnalysis = (
   fieldData: FieldData | null,
   currentRotations: RotationScore[]
 ): UseAIAnalysisResult => {
-  const [analysis, setAnalysis] = useState<any | null>(null)
+  const [analysis, setAnalysis] = useState<AnalysisResult | null>(() => (isOnline() ? null : loadCachedAnalysis()))
   const [alerts, setAlerts] = useState<string[]>([])
   const [suggestedRotations, setSuggestedRotations] = useState<RotationScore[]>(currentRotations)
   const [isLoading, setIsLoading] = useState(false)
@@ -37,6 +48,11 @@ export const useAIAnalysis = (
     try {
       const analysisResult = await analyzeFieldConditions(fieldData)
       setAnalysis(analysisResult)
+      try {
+        localStorage.setItem(ANALYSIS_KEY, JSON.stringify(analysisResult))
+      } catch {
+        /* storage full or disabled: keep working without cache */
+      }
 
       const alertsList = await generateAlerts(fieldData)
       setAlerts(alertsList)
@@ -52,7 +68,8 @@ export const useAIAnalysis = (
 
       const offlineData = getOfflineData()
       if (offlineData.fieldData) {
-        setAnalysis({ summary: 'Using cached data (offline)' })
+        const cached = loadCachedAnalysis()
+      if (cached) setAnalysis({ ...cached, summary: `${cached.summary} (saved earlier, offline)` })
         setAlerts(['Offline mode: using last saved data'])
       }
     } finally {
