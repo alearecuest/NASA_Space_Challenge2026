@@ -1,13 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AlertsList } from './components/AlertsList'
 import { ClimatePanel } from './components/ClimatePanel'
 import { CropSuitabilityGrid } from './components/CropSuitabilityGrid'
+import { FarmReportView } from './components/FarmReportView'
 import { Header } from './components/Header'
 import { LayerControls } from './components/LayerControls'
 import { LocationSearch } from './components/LocationSearch'
 import { MapView } from './components/MapView'
 import { RotationComparison } from './components/RotationComparison'
 import { RotationDetail } from './components/RotationDetail'
+import { SoilAnalysis } from './components/SoilAnalysis'
 import { TechnicalNotice } from './components/TechnicalNotice'
 import { UserPreferences } from './components/UserPreferences'
 import { DEFAULT_LOCATION } from './config/constants'
@@ -16,9 +18,11 @@ import { useSelectedLocation } from './hooks/useSelectedLocation'
 import { useClimateData } from './hooks/useClimateData'
 import { useRotationScoring, useCropSuitability } from './hooks/useRotationScoring'
 import { defaultGibsDate } from './services/gibsService'
+import { getCachedOrFetchSoil } from './services/soilGridsService'
+import type { SoilProperties } from './services/soilGridsService'
 import type { RotationId } from './types/rotation'
 
-type TabId = 'map' | 'rotations' | 'crops' | 'alerts'
+type TabId = 'map' | 'rotations' | 'crops' | 'alerts' | 'soil' | 'report'
 
 const App = () => {
   const { location, selectFromSearch, selectFromMap } = useSelectedLocation(DEFAULT_LOCATION)
@@ -31,10 +35,18 @@ const App = () => {
   const [showLabels, setShowLabels] = useState(true)
   const [activeTab, setActiveTab] = useState<TabId>('map')
   const [selectedRotation, setSelectedRotation] = useState<RotationId | null>(null)
+  const [soilData, setSoilData] = useState<SoilProperties | null>(null)
+
+  useEffect(() => {
+    getCachedOrFetchSoil(location)
+      .then((data) => setSoilData(data))
+      .catch(() => setSoilData(null))
+  }, [location])
 
   const layer = GIBS_LAYERS.find((option) => option.id === layerId) ?? GIBS_LAYERS[0]
 
   const suitableCrops = crops.filter((c) => c.score >= 60)
+  const currentRotation = scores.find((s) => s.rotationId === 'R0') || null
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -70,12 +82,21 @@ const App = () => {
           </button>
           <button
             onClick={() => {
-              setActiveTab('alerts')
+              setActiveTab('soil')
               setSelectedRotation(null)
             }}
-            className={`px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap ${activeTab === 'alerts' ? 'bg-emerald-500 text-white' : 'text-slate-700 hover:bg-slate-100'}`}
+            className={`px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap ${activeTab === 'soil' ? 'bg-emerald-500 text-white' : 'text-slate-700 hover:bg-slate-100'}`}
           >
-            Alerts
+            Soil
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab('report')
+              setSelectedRotation(null)
+            }}
+            className={`px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap ${activeTab === 'report' ? 'bg-emerald-500 text-white' : 'text-slate-700 hover:bg-slate-100'}`}
+          >
+            Report
           </button>
         </div>
 
@@ -161,6 +182,33 @@ const App = () => {
         {activeTab === 'alerts' && (
           <div className="bg-white rounded-lg p-6">
             <AlertsList location={location.label} latitude={location.lat} longitude={location.lon} />
+          </div>
+        )}
+
+        {activeTab === 'soil' && (
+          <div className="bg-white rounded-lg p-6">
+            {soilData ? (
+              <SoilAnalysis location={location} />
+            ) : (
+              <p className="text-slate-600">Loading soil data...</p>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'report' && (
+          <div className="bg-white rounded-lg p-6">
+            {isClimateLoading ? (
+              <p className="text-slate-600">Generating comprehensive farm report...</p>
+            ) : (
+              <FarmReportView
+                location={location}
+                locationName={location.label}
+                climate={summary}
+                soil={soilData}
+                currentRotation={currentRotation}
+                topRotations={ranked}
+              />
+            )}
           </div>
         )}
       </main>
