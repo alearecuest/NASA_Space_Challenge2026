@@ -12,8 +12,10 @@ import { RotationComparison } from './components/RotationComparison'
 import { RotationDetail } from './components/RotationDetail'
 import { SoilAnalysis } from './components/SoilAnalysis'
 import { TechnicalNotice } from './components/TechnicalNotice'
+import { Navigation } from './components/Navigation'
 import { DEFAULT_LOCATION } from './config/constants'
 import { GIBS_LAYERS } from './config/gibsLayers'
+import { colors, spacing } from './config/theme'
 import { useSelectedLocation } from './hooks/useSelectedLocation'
 import { useClimateData } from './hooks/useClimateData'
 import { useRotationScoring, useCropSuitability } from './hooks/useRotationScoring'
@@ -65,61 +67,31 @@ const App = () => {
 
   const allRotations = [...ranked, ...customScores].sort((a, b) => b.overall - a.overall)
 
+  const navTabs = [
+    { id: 'map', label: '🗺️ Map & Climate' },
+    { id: 'rotations', label: '🌱 Rotations' },
+    { id: 'crops', label: '🌾 Crops' },
+    { id: 'alerts', label: '⚠️ Alerts' },
+    { id: 'soil', label: '🌍 Soil' },
+    { id: 'report', label: '📊 Report' },
+  ]
+
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div style={{ minHeight: '100vh', background: `linear-gradient(135deg, ${colors.primary.darkestNight} 0%, ${colors.primary.darkBlue} 50%, ${colors.primary.veryDark} 100%)` }}>
       <Header />
-      <main className="mx-auto max-w-7xl space-y-6 px-4 py-6">
-        <div className="flex gap-2 border-b border-slate-200 bg-white p-4 rounded-lg overflow-x-auto">
-          <button
-            onClick={() => {
-              setActiveTab('map')
-              setSelectedRotation(null)
-            }}
-            className={`px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap ${activeTab === 'map' ? 'bg-emerald-500 text-white' : 'text-slate-700 hover:bg-slate-100'}`}
-          >
-            Map & Climate
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab('rotations')
-              setSelectedRotation(null)
-            }}
-            className={`px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap ${activeTab === 'rotations' ? 'bg-emerald-500 text-white' : 'text-slate-700 hover:bg-slate-100'}`}
-          >
-            Rotations
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab('crops')
-              setSelectedRotation(null)
-            }}
-            className={`px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap ${activeTab === 'crops' ? 'bg-emerald-500 text-white' : 'text-slate-700 hover:bg-slate-100'}`}
-          >
-            Crops
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab('soil')
-              setSelectedRotation(null)
-            }}
-            className={`px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap ${activeTab === 'soil' ? 'bg-emerald-500 text-white' : 'text-slate-700 hover:bg-slate-100'}`}
-          >
-            Soil
-          </button>
-          <button
-            onClick={() => {
-              setActiveTab('report')
-              setSelectedRotation(null)
-            }}
-            className={`px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap ${activeTab === 'report' ? 'bg-emerald-500 text-white' : 'text-slate-700 hover:bg-slate-100'}`}
-          >
-            Report
-          </button>
-        </div>
+      <main style={{ maxWidth: '1400px', margin: '0 auto', padding: spacing.xl, display: 'flex', flexDirection: 'column', gap: spacing.xl }}>
+        <Navigation
+          tabs={navTabs}
+          activeTab={activeTab}
+          onTabChange={(tabId) => {
+            setActiveTab(tabId as TabId)
+            setSelectedRotation(null)
+          }}
+        />
 
         {activeTab === 'map' && (
-          <div className="grid gap-6 lg:grid-cols-[340px_1fr]">
-            <div className="space-y-4">
+          <div style={{ display: 'grid', gap: spacing.xl, gridTemplateColumns: 'auto 1fr', gridAutoColumns: 'minmax(0, 1fr)' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg, maxWidth: '340px' }}>
               <LocationSearch onSelect={selectFromSearch} />
               <section className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
                 <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">

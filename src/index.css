@@ -1,11 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
 
+* {
+  font-family: 'Inter', sans-serif;
+}
+
 body {
-  @apply bg-slate-50 text-slate-900 antialiased;
+  background: linear-gradient(135deg, #0F2A44 0%, #163A5C 50%, #08182A 100%);
+  color: #F4F6F1;
   margin: 0;
+  min-height: 100vh;
+}
+
+html, body, #root {
+  background: linear-gradient(135deg, #0F2A44 0%, #163A5C 50%, #08182A 100%);
+  min-height: 100vh;
 }
 
 .leaflet-container {
-  font-family: inherit;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 42, 68, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #A6E36B;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8ed544;
+}
+
+/* Button reset */
+button {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+}
+
+/* Input reset */
+input, select, textarea {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Default text colors */
+h1, h2, h3, h4, h5, h6 {
+  color: #F4F6F1;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+p {
+  color: #BFD3E6;
+  line-height: 1.6;
+}
+
+a {
+  color: #A6E36B;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: #8ed544;
 }
