@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { AlertsList } from './components/AlertsList'
 import { ClimatePanel } from './components/ClimatePanel'
 import { CropSuitabilityGrid } from './components/CropSuitabilityGrid'
 import { Header } from './components/Header'
@@ -8,6 +9,7 @@ import { MapView } from './components/MapView'
 import { RotationComparison } from './components/RotationComparison'
 import { RotationDetail } from './components/RotationDetail'
 import { TechnicalNotice } from './components/TechnicalNotice'
+import { UserPreferences } from './components/UserPreferences'
 import { DEFAULT_LOCATION } from './config/constants'
 import { GIBS_LAYERS } from './config/gibsLayers'
 import { useSelectedLocation } from './hooks/useSelectedLocation'
@@ -16,7 +18,7 @@ import { useRotationScoring, useCropSuitability } from './hooks/useRotationScori
 import { defaultGibsDate } from './services/gibsService'
 import type { RotationId } from './types/rotation'
 
-type TabId = 'map' | 'rotations' | 'crops' | 'analysis'
+type TabId = 'map' | 'rotations' | 'crops' | 'alerts'
 
 const App = () => {
   const { location, selectFromSearch, selectFromMap } = useSelectedLocation(DEFAULT_LOCATION)
@@ -38,13 +40,13 @@ const App = () => {
     <div className="min-h-screen bg-slate-50">
       <Header />
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-6">
-        <div className="flex gap-2 border-b border-slate-200 bg-white p-4 rounded-lg">
+        <div className="flex gap-2 border-b border-slate-200 bg-white p-4 rounded-lg overflow-x-auto">
           <button
             onClick={() => {
               setActiveTab('map')
               setSelectedRotation(null)
             }}
-            className={`px-4 py-2 text-sm font-medium rounded-lg ${activeTab === 'map' ? 'bg-emerald-500 text-white' : 'text-slate-700 hover:bg-slate-100'}`}
+            className={`px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap ${activeTab === 'map' ? 'bg-emerald-500 text-white' : 'text-slate-700 hover:bg-slate-100'}`}
           >
             Map & Climate
           </button>
@@ -53,18 +55,27 @@ const App = () => {
               setActiveTab('rotations')
               setSelectedRotation(null)
             }}
-            className={`px-4 py-2 text-sm font-medium rounded-lg ${activeTab === 'rotations' ? 'bg-emerald-500 text-white' : 'text-slate-700 hover:bg-slate-100'}`}
+            className={`px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap ${activeTab === 'rotations' ? 'bg-emerald-500 text-white' : 'text-slate-700 hover:bg-slate-100'}`}
           >
-            Rotation Analysis
+            Rotations
           </button>
           <button
             onClick={() => {
               setActiveTab('crops')
               setSelectedRotation(null)
             }}
-            className={`px-4 py-2 text-sm font-medium rounded-lg ${activeTab === 'crops' ? 'bg-emerald-500 text-white' : 'text-slate-700 hover:bg-slate-100'}`}
+            className={`px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap ${activeTab === 'crops' ? 'bg-emerald-500 text-white' : 'text-slate-700 hover:bg-slate-100'}`}
           >
-            Crop Suitability
+            Crops
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab('alerts')
+              setSelectedRotation(null)
+            }}
+            className={`px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap ${activeTab === 'alerts' ? 'bg-emerald-500 text-white' : 'text-slate-700 hover:bg-slate-100'}`}
+          >
+            Alerts
           </button>
         </div>
 
@@ -144,6 +155,12 @@ const App = () => {
             ) : (
               <p className="text-slate-600">No suitable crops found for your location.</p>
             )}
+          </div>
+        )}
+
+        {activeTab === 'alerts' && (
+          <div className="bg-white rounded-lg p-6">
+            <AlertsList location={location.label} latitude={location.lat} longitude={location.lon} />
           </div>
         )}
       </main>
