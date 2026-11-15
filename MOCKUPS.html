@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Farm Clim Tech - Mobile Mockups</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #1a1a1a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .device-wrapper {
+      position: relative;
+      width: 320px;
+      height: 640px;
+      background: #000;
+      border-radius: 40px;
+      padding: 14px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+      overflow: hidden;
+    }
+
+    .device-wrapper::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 150px;
+      height: 26px;
+      background: #000;
+      border-radius: 0 0 30px 30px;
+      z-index: 10;
+    }
+
+    .notch {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 24px;
+      height: 12px;
+      background: #000;
+      border-radius: 0 0 6px 6px;
+      z-index: 11;
+      font-size: 7px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .device-screen {
+      width: 100%;
+      height: 100%;
+      border-radius: 32px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(135deg, #0F2A44 0%, #163A5C 50%, #08182A 100%);
+    }
+
+    .status-bar {
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: #BFD3E6;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .screen-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      padding-bottom: 70px;
+    }
+
+    .screen-content::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .screen-content::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .screen-content::-webkit-scrollbar-thumb {
+      background: rgba(166, 227, 107, 0.3);
+      border-radius: 2px;
+    }
+
+    .nav-bar {
+      position: absolute;
+      bottom: 0;
+      left: 14px;
+      right: 14px;
+      height: 56px;
+      background: #0B1C2E;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px 16px 32px 32px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      color: #8FA3B8;
+      font-size: 8px;
+      text-align: center;
+      flex: 1;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .nav-item.active {
+      color: #A6E36B;
+    }
+
+    .icon {
+      font-size: 18px;
+      display: inline-block;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: #F4F6F1;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    h2 {
+      font-size: 24px;
+      font-weight: 800;
+      color: #F4F6F1;
+      margin-bottom: 12px;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #F4F6F1;
+      margin-bottom: 8px;
+    }
+
+    .tagline {
+      font-size: 14px;
+      color: #A6E36B;
+      font-weight: 600;
+      margin-bottom: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .button {
+      width: 100%;
+      padding: 12px 16px;
+      background: #A6E36B;
+      color: #0F2A44;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'Inter', sans-serif;
+      box-shadow: 0 4px 16px rgba(166, 227, 107, 0.3);
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(166, 227, 107, 0.4);
+    }
+
+    .card {
+      background: #0B1C2E;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .semaphore {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      font-weight: 700;
+      color: #fff;
+      margin-right: 16px;
+      flex-shrink: 0;
+    }
+
+    .semaphore.healthy {
+      background: #4C8C2B;
+    }
+
+    .semaphore.caution {
+      background: #D9A441;
+    }
+
+    .semaphore.critical {
+      background: #C4572A;
+    }
+
+    .card-flex {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .card-content {
+      flex: 1;
+    }
+
+    .card-desc {
+      font-size: 12px;
+      color: #BFD3E6;
+      margin-bottom: 4px;
+    }
+
+    .card-text {
+      font-size: 13px;
+      color: #BFD3E6;
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    .location {
+      font-size: 13px;
+      color: #BFD3E6;
+    }
+
+    .alert-card {
+      background: rgba(196, 87, 42, 0.1);
+      border: 1.5px solid #C4572A;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .alert-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #C4572A;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+
+    .alert-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #F4F6F1;
+      margin-bottom: 4px;
+    }
+
+    .alert-msg {
+      font-size: 12px;
+      color: #BFD3E6;
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+
+    .alert-time {
+      font-size: 10px;
+      color: #8FA3B8;
+    }
+
+    .month-grid {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    .month-block {
+      flex: 0 0 calc((100% - 18px) / 4);
+      aspect-ratio: 1;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .month-block.low { background: #D4A574; }
+    .month-block.med { background: #D9A441; }
+    .month-block.high { background: #C4572A; }
+
+    .month-block:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #A6E36B;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .rotation-card {
+      background: #0B1C2E;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .rotation-card.recommended {
+      border: 2px solid #A6E36B;
+      background: rgba(166, 227, 107, 0.05);
+    }
+
+    .rotation-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .rotation-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #F4F6F1;
+    }
+
+    .rotation-score {
+      font-size: 20px;
+      font-weight: 800;
+      color: #A6E36B;
+    }
+
+    .footer-note {
+      font-size: 11px;
+      color: #8FA3B8;
+      margin-top: 8px;
+      padding: 8px;
+      background: rgba(166, 227, 107, 0.05);
+      border-radius: 8px;
+      border: 1px solid rgba(166, 227, 107, 0.2);
+    }
+
+    .onboarding-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      height: 100%;
+      padding: 20px;
+    }
+
+    .earthrise {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 20px;
+      background: radial-gradient(circle at 35% 35%, #87CEEB, #1E90FF);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .screen-label {
+      position: absolute;
+      top: -30px;
+      left: 0;
+      font-size: 12px;
+      font-weight: 600;
+      color: #A6E36B;
+      width: 100%;
+      text-align: center;
+    }
+
+    .mockup-container {
+      position: relative;
+      width: 320px;
+    }
+
+    .checklist {
+      background: #0B1C2E;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .checklist-item {
+      display: flex;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      align-items: flex-start;
+      font-size: 12px;
+      color: #BFD3E6;
+    }
+
+    .checklist-item:last-child {
+      border-bottom: none;
+    }
+
+    input[type="checkbox"] {
+      margin-top: 2px;
+      accent-color: #A6E36B;
+    }
+  </style>
+</head>
+<body>
+  <!-- Screen 1: Onboarding -->
+  <div class="mockup-container">
+    <div class="screen-label">1. Onboarding</div>
+    <div class="device-wrapper">
+      <div class="notch">🔋</div>
+      <div class="device-screen">
+        <div class="status-bar">
+          <span>9:41</span>
+          <span>📶 📡</span>
+        </div>
+        <div class="screen-content">
+          <div class="onboarding-center">
+            <div class="earthrise">🌍</div>
+            <h1>Farm Clim Tech</h1>
+            <p class="tagline">Eyes in the sky, in the farmer's hands</p>
+            <p style="font-size: 13px; color: #BFD3E6; margin-bottom: 30px; line-height: 1.5;">
+              Convert NASA satellite data into simple farming decisions. Know the climate risk in your field.
+            </p>
+            <button class="button">Pin your field</button>
+            <p style="font-size: 10px; color: #8FA3B8; margin-top: 20px;">Data: NASA SMAP, GPM, MODIS, NASA POWER</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 2: Field Dashboard -->
+  <div class="mockup-container">
+    <div class="screen-label">3. Field Dashboard</div>
+    <div class="device-wrapper">
+      <div class="notch">🔋</div>
+      <div class="device-screen">
+        <div class="status-bar">
+          <span>9:41</span>
+          <span>📶 📡</span>
+        </div>
+        <div class="screen-content">
+          <h2>My field</h2>
+          <p class="location">My field · Soriano</p>
+          <div style="margin-bottom: 20px;"></div>
+          
+          <div class="card card-flex">
+            <div class="semaphore healthy">65%</div>
+            <div class="card-content">
+              <h3 style="margin-bottom: 4px;">Soil Moisture</h3>
+              <p class="card-text">Healthy — Current moisture level in topsoil (0–30 cm).</p>
+            </div>
+          </div>
+
+          <div class="card card-flex">
+            <div class="semaphore caution">45</div>
+            <div class="card-content">
+              <h3 style="margin-bottom: 4px;">Rainfall (30d)</h3>
+              <p class="card-text">Above average (38mm). Good water supply.</p>
+            </div>
+          </div>
+
+          <div class="card card-flex">
+            <div class="semaphore healthy">72%</div>
+            <div class="card-content">
+              <h3 style="margin-bottom: 4px;">Vegetation Health</h3>
+              <p class="card-text">Healthy — Biomass and photosynthetic activity (NDVI).</p>
+            </div>
+          </div>
+
+          <div class="footer-note">
+            <strong style="color: #A6E36B;">Last update:</strong> Today at 14:32 UTC
+            <br><span style="font-size: 10px;">Illustrative prototype</span>
+          </div>
+        </div>
+        <div class="nav-bar">
+          <div class="nav-item active"><span class="icon">🗺️</span> Field</div>
+          <div class="nav-item"><span class="icon">📅</span> Risk</div>
+          <div class="nav-item"><span class="icon">🔄</span> Rotations</div>
+          <div class="nav-item"><span class="icon">🔔</span> Alerts</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 3: Risk Calendar -->
+  <div class="mockup-container">
+    <div class="screen-label">4. Risk Calendar</div>
+    <div class="device-wrapper">
+      <div class="notch">🔋</div>
+      <div class="device-screen">
+        <div class="status-bar">
+          <span>9:41</span>
+          <span>📶 📡</span>
+        </div>
+        <div class="screen-content">
+          <span class="label">Risk Calendar</span>
+          <div class="month-grid">
+            <div class="month-block low">Jan</div>
+            <div class="month-block low">Feb</div>
+            <div class="month-block med">Mar</div>
+            <div class="month-block med">Apr</div>
+            <div class="month-block med">May</div>
+            <div class="month-block high">Jun</div>
+            <div class="month-block high">Jul</div>
+            <div class="month-block high">Aug</div>
+            <div class="month-block med">Sep</div>
+            <div class="month-block med">Oct</div>
+            <div class="month-block low">Nov</div>
+            <div class="month-block low">Dec</div>
+          </div>
+
+          <div class="card">
+            <h3 style="font-size: 14px; color: #A6E36B;">August Risk Assessment</h3>
+            <p style="font-size: 12px; color: #BFD3E6; margin: 8px 0 0;">High drought risk expected. Ensure adequate irrigation and monitor soil moisture closely. Winter frost is also likely — protect sensitive crops.</p>
+          </div>
+
+          <p style="font-size: 11px; color: #8FA3B8; margin-top: 12px;">
+            🟡 Low | 🟠 Medium | 🔴 High drought risk
+          </p>
+        </div>
+        <div class="nav-bar">
+          <div class="nav-item"><span class="icon">🗺️</span> Field</div>
+          <div class="nav-item active"><span class="icon">📅</span> Risk</div>
+          <div class="nav-item"><span class="icon">🔄</span> Rotations</div>
+          <div class="nav-item"><span class="icon">🔔</span> Alerts</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 4: Compare Rotations -->
+  <div class="mockup-container">
+    <div class="screen-label">5. Compare Rotations</div>
+    <div class="device-wrapper">
+      <div class="notch">🔋</div>
+      <div class="device-screen">
+        <div class="status-bar">
+          <span>9:41</span>
+          <span>📶 📡</span>
+        </div>
+        <div class="screen-content">
+          <h2>Choose a rotation</h2>
+
+          <div class="rotation-card recommended">
+            <div class="rotation-header">
+              <span class="rotation-name">R1 Cover crop</span>
+              <span class="rotation-score">78</span>
+            </div>
+            <p style="font-size: 12px; color: #BFD3E6; margin: 0;">Best for your climate zone. High resilience.</p>
+          </div>
+
+          <div class="rotation-card">
+            <div class="rotation-header">
+              <span class="rotation-name">R3 Crop + pasture</span>
+              <span class="rotation-score">74</span>
+            </div>
+            <p style="font-size: 12px; color: #BFD3E6; margin: 0;">Good rotation with livestock.</p>
+          </div>
+
+          <div class="rotation-card">
+            <div class="rotation-header">
+              <span class="rotation-name">R2 Soy–maize–wheat</span>
+              <span class="rotation-score">69</span>
+            </div>
+            <p style="font-size: 12px; color: #BFD3E6; margin: 0;">Standard approach. Moderate risk.</p>
+          </div>
+
+          <div class="rotation-card">
+            <div class="rotation-header">
+              <span class="rotation-name">R0 Current</span>
+              <span class="rotation-score">58</span>
+            </div>
+            <p style="font-size: 12px; color: #BFD3E6; margin: 0;">Your current rotation. Higher risk.</p>
+          </div>
+
+          <div style="margin-top: 16px;">
+            <button class="button">+ Add custom rotation</button>
+          </div>
+        </div>
+        <div class="nav-bar">
+          <div class="nav-item"><span class="icon">🗺️</span> Field</div>
+          <div class="nav-item"><span class="icon">📅</span> Risk</div>
+          <div class="nav-item active"><span class="icon">🔄</span> Rotations</div>
+          <div class="nav-item"><span class="icon">🔔</span> Alerts</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 5: Rotation Detail -->
+  <div class="mockup-container">
+    <div class="screen-label">6. See Why</div>
+    <div class="device-wrapper">
+      <div class="notch">🔋</div>
+      <div class="device-screen">
+        <div class="status-bar">
+          <span>9:41</span>
+          <span>📶 📡</span>
+        </div>
+        <div class="screen-content">
+          <h2>See why</h2>
+
+          <div class="card" style="border: 2px solid #A6E36B;">
+            <p style="font-size: 12px; color: #BFD3E6; margin: 0 0 4px;">Recommended rotation</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h3 style="margin: 0;">R1 Cover crop</h3>
+              <div style="text-align: right;">
+                <div style="font-size: 24px; font-weight: 800; color: #A6E36B;">78</div>
+                <p style="font-size: 10px; color: #8FA3B8; margin: 0;">Resilience</p>
+              </div>
+            </div>
+          </div>
+
+          <span class="label">Why this rotation</span>
+
+          <div class="card card-flex">
+            <div style="width: 32px; height: 32px; min-width: 32px; border-radius: 50%; background: #A6E36B; color: #0F2A44; display: flex; align-items: center; justify-content: center; font-weight: 700;">1</div>
+            <p class="card-text">Reduces drought risk by 40% in dry months. Cover crops improve soil water retention.</p>
+          </div>
+
+          <div class="card card-flex">
+            <div style="width: 32px; height: 32px; min-width: 32px; border-radius: 50%; background: #A6E36B; color: #0F2A44; display: flex; align-items: center; justify-content: center; font-weight: 700;">2</div>
+            <p class="card-text">Increases soil organic matter, improving fertility and structure.</p>
+          </div>
+
+          <div class="card card-flex">
+            <div style="width: 32px; height: 32px; min-width: 32px; border-radius: 50%; background: #A6E36B; color: #0F2A44; display: flex; align-items: center; justify-content: center; font-weight: 700;">3</div>
+            <p class="card-text">Better income resilience in volatile markets due to diversified crops.</p>
+          </div>
+
+          <span class="label" style="margin-top: 12px;">What to check in your field</span>
+
+          <div class="checklist">
+            <div class="checklist-item"><input type="checkbox"> Soil pH suitable for legumes (6.0–7.5)</div>
+            <div class="checklist-item"><input type="checkbox"> Seedbed preparation for cover crop in March</div>
+            <div class="checklist-item"><input type="checkbox"> Equipment for inter-row management</div>
+          </div>
+        </div>
+        <div class="nav-bar">
+          <div class="nav-item"><span class="icon">🗺️</span> Field</div>
+          <div class="nav-item"><span class="icon">📅</span> Risk</div>
+          <div class="nav-item active"><span class="icon">🔄</span> Rotations</div>
+          <div class="nav-item"><span class="icon">🔔</span> Alerts</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 6: Alerts -->
+  <div class="mockup-container">
+    <div class="screen-label">7. Alerts</div>
+    <div class="device-wrapper">
+      <div class="notch">🔋</div>
+      <div class="device-screen">
+        <div class="status-bar">
+          <span>9:41</span>
+          <span>📶 📡</span>
+        </div>
+        <div class="screen-content">
+          <h2>Alerts</h2>
+          <p style="font-size: 12px; color: #BFD3E6; margin-bottom: 16px;">Real-time notifications based on NASA data.</p>
+
+          <div class="alert-card">
+            <div class="alert-dot" style="animation: pulse 2s infinite;"></div>
+            <div>
+              <div class="alert-title">Dry spell likely in the next 10 days</div>
+              <div class="alert-msg">Check soil moisture in the north plot — irrigation may be needed. Based on 7-day forecast.</div>
+              <div class="alert-time">Today at 14:32</div>
+            </div>
+          </div>
+
+          <div class="alert-card" style="background: rgba(217, 164, 65, 0.1); border-color: #D9A441;">
+            <div class="alert-dot" style="background: #D9A441;"></div>
+            <div>
+              <div class="alert-title">High temperature risk next month</div>
+              <div class="alert-msg">Heat stress risk in January. Consider shade crops or irrigation timing.</div>
+              <div class="alert-time">2 days ago</div>
+            </div>
+          </div>
+
+          <div class="alert-card" style="background: rgba(166, 227, 107, 0.1); border-color: #A6E36B;">
+            <div class="alert-dot" style="background: #A6E36B;"></div>
+            <div>
+              <div class="alert-title">Soil moisture recovering</div>
+              <div class="alert-msg">Recent rains have improved topsoil moisture. Good conditions for planting.</div>
+              <div class="alert-time">3 days ago</div>
+            </div>
+          </div>
+        </div>
+        <div class="nav-bar">
+          <div class="nav-item"><span class="icon">🗺️</span> Field</div>
+          <div class="nav-item"><span class="icon">📅</span> Risk</div>
+          <div class="nav-item"><span class="icon">🔄</span> Rotations</div>
+          <div class="nav-item active"><span class="icon">🔔</span> Alerts</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+  </style>
+</body>
+</html>
